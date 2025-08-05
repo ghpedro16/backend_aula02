@@ -35,6 +35,13 @@
  * 
  * */
 
+const MESSAGE_ERROR_EMPTY = 'ERRO: Existem campos que não foram preenchidos.'
+const MESSAGE_ERROR_NOT_NUMBER = 'ERRO: Não é possivel calcular com a entrada de letras.'
+const MESSAGE_ERROR_OUT_OF_RANGER = 'ERRO: Os valores informados precisam ser entre 0 e 10.'
+
+// Import da biblioteca que calcula a media
+var mediaEscolar = require('./modulo/media.js')
+
 // Import da biblioteca do readline
 var readline = require('readline')
 
@@ -62,26 +69,25 @@ entradaDeDados.question('Digite o nome do aluno: ', function(nome){
                     let nota4 = valor4
 
                     if(nota1 == '' || nota2 == '' || nota3 == '' || nota4 == '' || nomeAluno == ''){
-                        console.log('ERRO: Existem campos que não foram preenchidos.')
+                        console.log(MESSAGE_ERROR_EMPTY)
 
                     }else if(isNaN(nota1) == true || isNaN(nota2) == true || isNaN(nota3) == true || isNaN(nota4) == true){
-                        console.log('ERRO: Não é possivel calcular com a entrada de letras.')
+                        console.log(MESSAGE_ERROR_NOT_NUMBER)
 
                     }else if(Number(nota1) < 0 || Number(nota1) > 10 || Number(nota2) < 0 || Number(nota2) > 10 || Number(nota3) < 0 || Number(nota3) > 10 || Number(nota4) < 0 || Number(nota4) > 10){
-                        console.log('ERRO: Os valores informados precisam ser entre 0 e 10.')
+                        console.log(MESSAGE_ERROR_OUT_OF_RANGER)
                         
                     }else{
-                        let media = (Number(nota1) + Number(nota2) + Number(nota3) + Number(nota4))/4
-                        let statusAluno
-                        if(media < 5){
-                            statusAluno = 'REPROVADO'
-                        }else if(media >= 5 && media < 7){
-                            statusAluno = 'EXAME'
-                        }else if(media >= 7 && media <= 10){
-                            statusAluno = 'APROVADO'
+                        // Chamando as funções para calcular média e validar status
+                        let media = mediaEscolar.calcularMedia(nota1, nota2, nota3, nota4)
+                        let statusAluno = mediaEscolar.validarStatus(media)
+                        
+                        if(statusAluno){
+                            console.log(`O aluno(a) ${nomeAluno} teve a média ${media} e está: ${statusAluno}`)
+                            entradaDeDados.close
                         }
 
-                        console.log(`O aluno(a) ${nomeAluno} teve a média ${media.toFixed(1)} e está: ${statusAluno}`)
+                        
                     }
 
                 })
